@@ -237,7 +237,7 @@ void (* const g_pfnVectors[])(void) =
 
 //*****************************************************************************
 //
-// The following are constructs created by the linker, indicating where the
+// The following are constructs created by the linkerscripts, indicating where the
 // the "data" and "bss" segments reside in memory.  The initializers for the
 // for the "data" segment resides immediately following the "text" segment.
 //

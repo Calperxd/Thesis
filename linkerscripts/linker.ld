@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * memory.ld - Linker configuration file for project.
+ * linker.ld - Linker configuration file for project.
  *
  * Copyright (c) 2013-2020 Texas Instruments Incorporated.  All rights reserved.
  * Software License Agreement
