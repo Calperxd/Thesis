@@ -50,9 +50,6 @@ void ResetISR(void);
 static void NmiSR(void);
 static void FaultISR(void);
 static void IntDefaultHandler(void);
-extern void xPortPendSVHandler(void);
-extern void vPortSVCHandler(void);
-extern void xPortSysTickHandler(void);
 
 //*****************************************************************************
 //
@@ -89,11 +86,11 @@ void (* const g_pfnVectors[])(void) =
     0,                                      // Reserved
     0,                                      // Reserved
     0,                                      // Reserved
-    vPortSVCHandler,                      // SVCall handler
+    IntDefaultHandler,                      // SVCall handler
     IntDefaultHandler,                      // Debug monitor handler
     0,                                      // Reserved
-    xPortPendSVHandler,                      // The PendSV handler
-    xPortSysTickHandler,                      // The SysTick handler
+    IntDefaultHandler,                      // The PendSV handler
+    IntDefaultHandler,                      // The SysTick handler
     IntDefaultHandler,                      // GPIO Port A
     IntDefaultHandler,                      // GPIO Port B
     IntDefaultHandler,                      // GPIO Port C
@@ -237,7 +234,7 @@ void (* const g_pfnVectors[])(void) =
 
 //*****************************************************************************
 //
-// The following are constructs created by the linkerscripts, indicating where the
+// The following are constructs created by the linker, indicating where the
 // the "data" and "bss" segments reside in memory.  The initializers for the
 // for the "data" segment resides immediately following the "text" segment.
 //

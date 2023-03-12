@@ -1,49 +1,45 @@
 cmake_minimum_required(VERSION 3.0)
-project(MeuProjeto C)
 
+SET (CMAKE_C_COMPILER_WORKS 1)
+SET (CMAKE_CXX_COMPILER_WORKS 1)
+
+project(NOME_DO_PROJETO C ASM)
 
 set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR arm)
-set(PART TM4C129ENCPDT)
+set(CMAKE_SYSTEM_PROCESSOR cortex-m4)
+# Avoid known bug in linux giving:
+#    arm-none-eabi-gcc: error: unrecognized command line option '-rdynamic'
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 set(CMAKE_C_COMPILER arm-none-eabi-gcc)
-set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "-Wl,-no-dynamic-linker")
-set(CMAKE_LINKER_SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/linkerscripts/linker.ld)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,-no-dynamic-linker -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -O2 -DPART_${PART}")
+set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
+set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
+set(PART TM4C129ENCPDT)
+set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -DPART_${PART} -Dgcc")
+set(CMAKE_EXE_LINKER_FLAGS "-nostartfiles -T ${CMAKE_SOURCE_DIR}/linkerscripts/linker.ld -Wl,-Map=${PROJECT_NAME}.map")
 
 include_directories(include)
 include_directories($ENV{TIVAWARE_HOME})
 include_directories($ENV{FREERTOS_HOME}/FreeRTOS/Source/include)
 include_directories($ENV{FREERTOS_HOME}/FreeRTOS/Source/portable/GCC/ARM_CM4F)
 
-file(GLOB SOURCES "source/*.c")
-file(GLOB DriverLib $ENV{TIVAWARE_HOME}/driverlib/*.c)
+file(GLOB SOURCE "${CMAKE_SOURCE_DIR}/source/*.c")
+file(GLOB DRIVERLIBSOURCE "$ENV{TIVAWARE_HOME}/driverlib/*.c")
 file(GLOB FreeRTOSSource1 $ENV{FREERTOS_HOME}/FreeRTOS/Source/*.c)
 file(GLOB FreeRTOSSource2 $ENV{FREERTOS_HOME}/FreeRTOS/Source/portable/MemMang/heap_4.c)
 file(GLOB FreeRTOSSource3 $ENV{FREERTOS_HOME}/FreeRTOS/Source/portable/GCC/ARM_CM4F/*.c)
-set(FreeRTOSSource ${FreeRTOSSource1} ${FreeRTOSSource2} ${FreeRTOSSource3})
-set(SOURCES ${FreeRTOSSource} ${DriverLib} source/startup_gcc.c)
-add_definitions(-Dgcc)
+set(FREERTOSSOURCE ${FreeRTOSSource1} ${FreeRTOSSource2} ${FreeRTOSSource3})
 
-add_executable(main main.c ${SOURCES})
-set_target_properties(main PROPERTIES OUTPUT_NAME "main.axf")
-set(CMAKE_EXE_LINKER_FLAGS "-Wl,-no-dynamic-linker -T ${CMAKE_LINKER_SCRIPT} -Wl,-Map=main.map -nostartfiles --specs=nosys.specs -D__STARTUP_FROM_RESET_VECTOR__")
 
-add_custom_command(TARGET main POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy main.axf main.bin
-        COMMAND arm-none-eabi-size $<TARGET_FILE:main>
-        )
+set(ELF_NAME ${PROJECT_NAME}.elf)
+add_executable(${ELF_NAME} main.c ${SOURCE} ${DRIVERLIBSOURCE} ${FREERTOSSOURCE})
 
-set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
-set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-set(LINKER_SCRIPT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/linkerscripts)
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/source)
+#target_link_libraries(${ELF_NAME} ${CMAKE_SOURCE_DIR}/lib/libdriver.a)
+target_link_libraries(${ELF_NAME} m)
+target_compile_options(${ELF_NAME} PUBLIC -Wall)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/build)
-set_target_properties(main PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
-set_target_properties(main PROPERTIES RUNTIME_OUTPUT_DIRECTORY_DEBUG "${CMAKE_CURRENT_SOURCE_DIR}/build")
-set_target_properties(main PROPERTIES RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_CURRENT_SOURCE_DIR}/build")
-
-file(COPY ${INCLUDE_DIR} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build)
-file(COPY ${LIB_DIR} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build)
-file(COPY ${LINKER_SCRIPT_DIR} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build)
-file(COPY ${SOURCE_DIR} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/build)
+set(BIN_NAME ${PROJECT_NAME}.bin)
+add_custom_command(TARGET ${ELF_NAME} POST_BUILD
+    COMMAND arm-none-eabi-objcopy -O binary ${ELF_NAME} ${BIN_NAME}
+    COMMENT "Converting ${ELF_NAME} to ${BIN_NAME}"
+    VERBATIM)
