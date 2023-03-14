@@ -23,6 +23,8 @@ SECTIONS
         *(.data*)
         _edata = .;
     } > SRAM
+    _end = _edata ;
+    PROVIDE(end = _edata);
 
     .bss :
     {
