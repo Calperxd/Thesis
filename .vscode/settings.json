@@ -1,0 +1,33 @@
+{
+    "files.associations": {
+        "decoder.h": "c",
+        "floatpointutils.h": "c",
+        "stdbool.h": "c",
+        "math.h": "c",
+        "potentiometer.h": "c",
+        "uart.h": "c",
+        "semphr.h": "c",
+        "freertos.h": "c",
+        "setup.h": "c",
+        "gpio.h": "c",
+        "sysctl.h": "c",
+        "hw_memmap.h": "c",
+        "rom.h": "c",
+        "rom_map.h": "c",
+        "pin_map.h": "c",
+        "queue.h": "c",
+        "debug.h": "c",
+        "timers.h": "c",
+        "event_groups.h": "c",
+        "adc.h": "c",
+        "interrupt.h": "c",
+        "uartstdio.h": "c",
+        "string.h": "c",
+        "stdint.h": "c",
+        "task.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "readme": "c"
+    },
+    "cmake.configureOnOpen": false
+}

@@ -1,106 +1,96 @@
 #include "Decoder.h"
 
-const int MAX_STRING_LENGTH = 21;
-
-void DecodeCommand(const uint8_t* command, FullCommand *commandTranslated)
+bool DecodeCommand(const uint8_t* command, FullCommand *commandTranslated)
 {
-    uint8_t hashTagsIndex[6] = {0};
-    uint8_t hashTagIndexCounter = 0;
-    uint8_t cmd[5] = {0};
-    uint8_t param1[5] = {0};
-    uint8_t param2[5] = {0};
-    uint8_t copyCounter = 0;
-    uint32_t result = 1;
+    const char *delimiters = "#";
+    uint8_t counter = 0;
+    uint8_t cmd[6] = {0};
+    uint8_t param1[6] = {0};
+    uint8_t param2[6] = {0};
+    char *save_ptr;
+    uint8_t *token = strtok_r((char *)command, delimiters, &save_ptr);
+    uint8_t result = 0;
 
-    for (int i = 0; i < MAX_STRING_LENGTH; i++)
+    while (token != NULL)
     {
-        if (command[i] == '#')
+        if (counter == 0)
         {
-            hashTagsIndex[hashTagIndexCounter] = i;
-            hashTagIndexCounter++;
+            strcpy((char *)cmd, (const char *)token);
         }
+        if (counter == 1)
+        {
+            strcpy((char *)param1,(const char *)token);
+        }
+        if (counter == 2)
+        {
+            strcpy((char *)param2,(const char *)token);
+        }
+        // Chamadas subsequentes para strtok_r com NULL
+        token = strtok_r(NULL, delimiters, &save_ptr);
+        counter++;
     }
 
-    for (int i = (hashTagsIndex[0]+1); i < hashTagsIndex[1]; i++)
-    {
-        cmd[copyCounter] = command[i];
-        copyCounter++;
-    }
-    copyCounter = 0;
-    for (int i = (hashTagsIndex[2]+1); i < hashTagsIndex[3]; i++)
-    {
-        param1[copyCounter] = command[i];
-        copyCounter++;
-    }
-    copyCounter = 0;
-    for (int i = (hashTagsIndex[4]+1); i < hashTagsIndex[5]; i++)
-    {
-        param2[copyCounter] = command[i];
-        copyCounter++;
-    }
-
-    result = strcmp(cmd, "START");
+    result = strcmp((const char *)cmd, "START");
     if (result == 0)
     {
         commandTranslated->commands = CMD_START;
-        commandTranslated->param1 = ceilf(atof(param1) * 100.0) / 100.0;
+        commandTranslated->param1 = atof((const char *)param1);
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
 
-    result = strcmp(cmd, "STOP");
+    result = strcmp((const char *)cmd, "STOP");
     if (result == 0)
     {
         commandTranslated->commands = CMD_STOP;
         commandTranslated->param1 = 0;
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
 
-    result = strcmp(cmd, "PLUS");
+    result = strcmp((const char *)cmd, "PLUS");
     if (result == 0)
     {
-        commandTranslated->commands = CMD_START;
+        commandTranslated->commands = CMD_PLUS;
         commandTranslated->param1 = 0;
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
 
-    result = strcmp(cmd, "MINUS");
+    result = strcmp((const char *)cmd, "MINUS");
     if (result == 0)
     {
-        commandTranslated->commands = CMD_START;
+        commandTranslated->commands = CMD_MINUS;
         commandTranslated->param1 = 0;
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
 
-    result = strcmp(cmd, "STRRG");
+    result = strcmp((const char *)cmd, "STRRG");
     if (result == 0)
     {
-        commandTranslated->commands = CMD_START;
-        commandTranslated->param1 = ceilf(atof(param1) * 100.0) / 100.0;
-        commandTranslated->param2 = ceilf(atof(param1) * 100.0) / 100.0;
-        return;
+        commandTranslated->commands = CMD_STRRG;
+        commandTranslated->param1 = roundToTwoDecimalPlaces(atof((const char *)param1));
+        commandTranslated->param2 = roundToTwoDecimalPlaces(atof((const char *)param2));
+        return true;
     }
 
-    result = strcmp(cmd, "STRG");
+    result = strcmp((const char *)cmd, "STRG");
     if (result == 0)
     {
-        commandTranslated->commands = CMD_START;
+        commandTranslated->commands = CMD_STRG;
         commandTranslated->param1 = 0;
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
 
-    result = strcmp(cmd, "CLRRG");
+    result = strcmp((    const char *)cmd, "CLRRG");
     if (result == 0)
     {
-        commandTranslated->commands = CMD_START;
+        commandTranslated->commands = CMD_CLRRG;
         commandTranslated->param1 = 0;
         commandTranslated->param2 = 0;
-        return;
+        return true;
     }
-
-
+    return false;
 }

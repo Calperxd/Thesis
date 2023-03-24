@@ -1,4 +1,11 @@
 #include "floatpointUtils.h"
+
+float roundToTwoDecimalPlaces(float num) 
+{
+    return roundf(num * 100) / 100;
+}
+
+
 // Reverses a string 'str' of length 'len'
 void reverse(char* str, int len)
 {
@@ -36,7 +43,7 @@ int intToStr(int x, char str[], int d)
 
 
 // Converts a floating-point/double number to a string.
-void ftoa(float n, char* res, int afterpoint)
+void floatToString(float n, char* res, int afterpoint)
 {
     // Extract integer part
     int ipart = (int)n;

@@ -50,11 +50,16 @@
 #define configMINIMAL_STACK_SIZE	                    ( ( unsigned short ) 120 )
 #define configTOTAL_HEAP_SIZE		                    ( ( size_t ) ( 9000 ) )
 #define configMAX_TASK_NAME_LEN		                    ( 10 )
-#define configUSE_TRACE_FACILITY	                    0
+#define configUSE_TRACE_FACILITY	                    1
 #define configUSE_16_BIT_TICKS		                    0
 #define configIDLE_SHOULD_YIELD		                    0
 #define configUSE_CO_ROUTINES 		                    0
 #define configSUPPORT_DYNAMIC_ALLOCATION                1
+#define configUSE_MUTEXES                               1
+#define configUSE_TIMERS                                1
+#define configTIMER_TASK_PRIORITY                       9
+#define configTIMER_QUEUE_LENGTH                        10
+#define configTIMER_TASK_STACK_DEPTH                    512
 
 #define configMAX_PRIORITIES		                    ( 10 )
 #define configMAX_CO_ROUTINE_PRIORITIES                 ( 3 )
@@ -69,6 +74,9 @@ to exclude the API function. */
 #define INCLUDE_vTaskResume                             1
 #define INCLUDE_vTaskDelete                             1
 #define INCLUDE_vTaskPrioritySet                        1
+#define INCLUDE_xTaskGetHandle                          1
+#define INCLUDE_xTimerGenericCommand                    1
+#define INCLUDE_xTimerGetTimerDaemonTaskHandle          1
 
 #define configKERNEL_INTERRUPT_PRIORITY 		        255
 /* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!

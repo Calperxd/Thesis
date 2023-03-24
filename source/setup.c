@@ -1,5 +1,4 @@
 #include "setup.h"
-
 // Store the value of clock
 static uint32_t clock = 0;
 
@@ -10,6 +9,9 @@ void setupClock(void)
 
 void setupLed(void)
 {
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOF)){}
+    GPIOPinTypeGPIOOutput(GPIO_PORTF_BASE, (GPIO_PIN_4 | GPIO_PIN_3 | GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0));
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPION);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPION)){}
     GPIOPinTypeGPIOOutput(GPIO_PORTN_BASE, (GPIO_PIN_4 | GPIO_PIN_3 | GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0));
@@ -18,25 +20,26 @@ void setupLed(void)
     GPIOPinTypeGPIOOutput(GPIO_PORTL_BASE, (GPIO_PIN_4 | GPIO_PIN_3 | GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0));
 }
 
+void setupUart(void)
+{
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    IntMasterEnable();
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    UARTConfigSetExpClk(UART0_BASE, getClock(), 921600, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
+    IntEnable(INT_UART0);
+    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+    UARTStdioConfig(0, 921600, getClock());
+}
+
 void setupSW(void)
 {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOJ);
     while(!SysCtlPeripheralReady(SYSCTL_PERIPH_GPIOJ)){}
     GPIOPinTypeGPIOInput(GPIO_PORTJ_BASE, (GPIO_PIN_1 | GPIO_PIN_0));
     GPIOPadConfigSet(GPIO_PORTJ_BASE, (GPIO_PIN_1 | GPIO_PIN_0) , GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
-}
-
-void setupUart(void)
-{
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    while(!SysCtlPeripheralReady(SYSCTL_PERIPH_UART0))
-    {
-    }
-    GPIOPinConfigure(GPIO_PA0_U0RX);
-    GPIOPinConfigure(GPIO_PA1_U0TX);
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-    UARTConfigSetExpClk(UART0_BASE, clock, 921600, (UART_CONFIG_WLEN_8 | UART_CONFIG_STOP_ONE | UART_CONFIG_PAR_NONE));
 }
 
 void setupADC(void)

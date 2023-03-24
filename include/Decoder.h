@@ -1,10 +1,15 @@
+#ifndef DECODER_H
+#define DECODER_H
+
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
+#include "floatPointUtils.h"
+#include "setup.h"
 
-#ifndef DECODER_H
-#define DECODER_H
+
 
 typedef enum
 {
@@ -25,7 +30,7 @@ typedef struct
     float param2;
 }FullCommand;
 
-void DecodeCommand(const uint8_t* command, FullCommand *commandTranslated);
+bool DecodeCommand(const uint8_t* command, FullCommand *commandTranslated);
 
 
 #endif
