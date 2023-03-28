@@ -35,7 +35,7 @@ set(FREERTOSSOURCE ${FreeRTOSSource1} ${FreeRTOSSource2} ${FreeRTOSSource3})
 set(ELF_NAME ${PROJECT_NAME}.elf)
 add_executable(${ELF_NAME} main.c ${SOURCE} ${DRIVERLIBSOURCE} ${FREERTOSSOURCE})
 
-#target_link_libraries(${ELF_NAME} ${CMAKE_SOURCE_DIR}/lib/libdriver.a)
+target_link_libraries(${ELF_NAME} ${CMAKE_SOURCE_DIR}/lib/libfftw3.a)
 target_link_libraries(${ELF_NAME} m)
 target_compile_options(${ELF_NAME} PUBLIC -Wall)
 

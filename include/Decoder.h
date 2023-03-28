@@ -6,7 +6,7 @@
 #include <string.h>
 #include <math.h>
 #include <stdbool.h>
-#include "floatPointUtils.h"
+#include "floatpointUtils.h"
 #include "setup.h"
 
 

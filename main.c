@@ -23,6 +23,7 @@
 #include "LinearRegression.h"
 #include "floatpointUtils.h"
 #include "utils/uartstdio.h"
+#include "fftw3.h"
 /*************************************************************************************************/
 /*Global Variables*/
 volatile uint8_t RUNNING_SAMPLING = (1 << 0 );
