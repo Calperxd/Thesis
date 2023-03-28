@@ -11,11 +11,12 @@
 #ifndef LINEARREGRESSION_H
 #define LINEARREGRESSION_H
 #include <math.h>
+#include <stdint.h>
 
 typedef struct LinearRegressionTable
 {
-    int maxIndex;
-    int *x;
+    uint32_t maxIndex;
+    float *x;
     float *y;
 }LinearRegressionTable;
 

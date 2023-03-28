@@ -44,6 +44,7 @@
 #define configUSE_PREEMPTION		                    1
 #define configUSE_TIME_SLICING                          1
 #define configUSE_IDLE_HOOK			                    0
+#define configUSE_TRACE_HOOKS                           1
 #define configUSE_TICK_HOOK			                    0
 #define configCPU_CLOCK_HZ			                    ( ( unsigned long ) 120000000 )
 #define configTICK_RATE_HZ			                    ( ( TickType_t ) 100000 )
@@ -60,6 +61,7 @@
 #define configTIMER_TASK_PRIORITY                       9
 #define configTIMER_QUEUE_LENGTH                        10
 #define configTIMER_TASK_STACK_DEPTH                    512
+#define configQUEUE_REGISTRY_SIZE                       1
 
 #define configMAX_PRIORITIES		                    ( 10 )
 #define configMAX_CO_ROUTINE_PRIORITIES                 ( 3 )

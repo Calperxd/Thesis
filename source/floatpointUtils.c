@@ -1,5 +1,12 @@
 #include "floatpointUtils.h"
 
+// Extract integer part
+static uint32_t ipart = 0;
+// Extract floating part
+static float fpart = 0;
+
+
+
 float roundToTwoDecimalPlaces(float num) 
 {
     return roundf(num * 100) / 100;
@@ -43,7 +50,7 @@ int intToStr(int x, char str[], int d)
 
 
 // Converts a floating-point/double number to a string.
-void floatToString(float n, char* res, int afterpoint)
+void ftoa(float n, char* res, int afterpoint)
 {
     // Extract integer part
     int ipart = (int)n;
