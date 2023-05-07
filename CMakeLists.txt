@@ -15,7 +15,7 @@ set(CMAKE_C_COMPILER arm-none-eabi-gcc)
 set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
 set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 set(PART TM4C129ENCPDT)
-set(CMAKE_C_FLAGS "-mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -DPART_${PART} -Dgcc -O2")
+set(CMAKE_C_FLAGS "-Wall -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -DPART_${PART} -Dgcc -O2")
 set(CMAKE_EXE_LINKER_FLAGS "-specs=nano.specs -specs=nosys.specs -nostartfiles -T ${CMAKE_SOURCE_DIR}/linkerscripts/linker.ld -Wl,-Map=${PROJECT_NAME}.map")
 
 include_directories(include)
@@ -33,7 +33,7 @@ set(FREERTOSSOURCE ${FreeRTOSSource1} ${FreeRTOSSource2} ${FreeRTOSSource3})
 
 
 set(ELF_NAME ${PROJECT_NAME}.elf)
-add_executable(${ELF_NAME} main.c ${SOURCE} ${DRIVERLIBSOURCE} ${FREERTOSSOURCE})
+add_executable(${ELF_NAME} ${SOURCE} ${DRIVERLIBSOURCE} ${FREERTOSSOURCE})
 
 target_link_libraries(${ELF_NAME} ${CMAKE_SOURCE_DIR}/lib/libfftw3.a)
 target_link_libraries(${ELF_NAME} m)
